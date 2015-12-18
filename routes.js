@@ -19,7 +19,9 @@ Routes.prototype.index = function() {
 
 Routes.prototype.restricted = function() {
     return function(req, res) {
-        res.render('restricted');
+        res.render('restricted', {
+            user: req.user,
+        });
     };
 }
 

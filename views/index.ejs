@@ -11,6 +11,10 @@
             <p style="color:red"><%= message %></p>
         <% } %>
         
+        <p>
+            access the <a href="/restricted">restricted</a> page.
+        </p>
+        
         <% if (user) { %>
             <p>
                 logged in as <%= user.username %>
