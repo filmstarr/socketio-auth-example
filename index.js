@@ -4,6 +4,10 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var flash = require('connect-flash');
+
+var auth = new (require('./auth'))();
+var routes = new (require('./routes'))();
 
 // set up the main app
 var app = express();
@@ -16,9 +20,15 @@ app.use(session({
     resave: false,
     saveUninitialized: false, // this stops a session being written until logged in
 }));
+app.use(flash());
+
+auth.setup(app);
 
 // routes
-app.get('/', function(req, res) { res.render('index') });
+app.get('/', routes.index());
+app.get('/restricted', auth.ensureAuthenticated, routes.restricted());
+app.post('/login', auth.login(), routes.redirect('/'));
+app.get('/logout', auth.logout());
 
 // set up the server
 http.createServer(app).listen(3001, function() {
