@@ -15,6 +15,10 @@
             access the <a href="/restricted">restricted</a> page.
         </p>
         
+        <p>
+            socket status: <span id="socketStatus" style="color:blue">initial</span>
+        </p>
+        
         <% if (user) { %>
             <p>
                 logged in as <%= user.username %>
@@ -29,5 +33,9 @@
                 <button type="submit" value="Submit">log in</button>  
             </form>
         <% } %>
+        
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/socket-auth.js"></script>
+        
     </body>
 </html>

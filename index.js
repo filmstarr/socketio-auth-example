@@ -8,6 +8,7 @@ var flash = require('connect-flash');
 
 var auth = new (require('./auth'))();
 var routes = new (require('./routes'))();
+var sockets = new (require('./sockets'))();
 
 // set up the main app
 var app = express();
@@ -21,6 +22,7 @@ app.use(session({
     saveUninitialized: false, // this stops a session being written until logged in
 }));
 app.use(flash());
+app.use(express.static(path.join(__dirname, 'public')));
 
 auth.setup(app);
 
@@ -31,6 +33,9 @@ app.post('/login', auth.login(), routes.redirect('/'));
 app.get('/logout', auth.logout());
 
 // set up the server
-http.createServer(app).listen(3001, function() {
+var server = http.createServer(app);
+server.listen(3001, function() {
     console.log('listening on http://localhost:3001/');
+    console.log('starting sockets');
+    sockets.start(server);
 });
