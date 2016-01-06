@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <p>
+            test socketio auth login
+        <P>
+        
+        <% if (user) { %>
+            <p>
+                logged in as <%= user.username %>
+            </p>
+            <p>
+                <a href="/">home</a> | <a href="/logout">logout</a>
+            </p>
+        <% } else { %>
+            <form action="/login" method="post">
+                <div>username:<div><div><input type="text" name="username" placeholder="user"></div>
+                <div>password:<div><div><input type="password" name="password" placeholder="password"></div>
+                <button type="submit" value="Submit">log in</button>  
+            </form>
+        <% } %>
+        
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/socket-auth.js"></script>
+    </body>
+</html>

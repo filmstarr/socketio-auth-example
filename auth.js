@@ -1,12 +1,14 @@
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var users = new (require('./users'))();
+var security = security;
 
 function Auth() {
 }
 
-Auth.prototype.setup = function(app) {
+Auth.prototype.setup = function(app, securityParam) {
     console.log('setting up passport');
+    security = securityParam;
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
@@ -38,12 +40,13 @@ Auth.prototype.setup = function(app) {
 }
 
 Auth.prototype.login = function() {
-    return passport.authenticate('local', { failureRedirect: '/', failureFlash: true });
+    return passport.authenticate('local', { failureRedirect: '/login', failureFlash: true });
 }
 
 Auth.prototype.logout = function() {
     return function(req, res) {
         req.logout();
+        security.disconnect(req.sessionID);
         res.redirect('/');
     }
 }
@@ -52,7 +55,7 @@ Auth.prototype.ensureAuthenticated = function(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/');
+    res.redirect('/login');
 }
 
 module.exports = Auth;

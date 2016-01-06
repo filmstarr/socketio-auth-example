@@ -5,9 +5,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
+var sessionStore = new session.MemoryStore();
 
 var auth = new (require('./auth'))();
-var routes = new (require('./routes'))();
+var security = new (require('./security'))();
+var routes = new (require('./routes'))(security);
 var sockets = new (require('./sockets'))();
 
 // set up the main app
@@ -17,17 +19,25 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
+    store: sessionStore,
     secret: 'test hash 123!',
     resave: false,
     saveUninitialized: false, // this stops a session being written until logged in
+    cookie: {
+        // milliseconds
+        maxAge: 20 * 1000, // short timeout to test things with
+    },
+    // rolling means it's renewed every time a page load occurs, but does the session id change?
+    rolling: true,
 }));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
-auth.setup(app);
+auth.setup(app, security);
 
 // routes
-app.get('/', routes.index());
+app.get('/', auth.ensureAuthenticated, routes.index());
+app.get('/login', routes.login());
 app.get('/restricted', auth.ensureAuthenticated, routes.restricted());
 app.post('/login', auth.login(), routes.redirect('/'));
 app.get('/logout', auth.logout());
@@ -36,6 +46,6 @@ app.get('/logout', auth.logout());
 var server = http.createServer(app);
 server.listen(3001, function() {
     console.log('listening on http://localhost:3001/');
-    console.log('starting sockets');
-    sockets.start(server);
+    sockets.start(server, security);
+    security.start(sockets, sessionStore);
 });
