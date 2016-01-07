@@ -25,7 +25,7 @@ app.use(session({
     saveUninitialized: false, // this stops a session being written until logged in
     cookie: {
         // milliseconds
-        maxAge: 20 * 1000, // short timeout to test things with
+        maxAge: 15 * 1000, // short cookie expiry to test things with
     },
     // rolling means it's renewed every time a page load occurs, but does the session id change?
     rolling: true,

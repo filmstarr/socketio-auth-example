@@ -1,13 +1,22 @@
-
-
-
 log('connecting to socket');
-var socket = io.connect('localhost:3001/');
+var socket = io.connect(':3001' + (window.location.pathname == '/restricted' ? '/test' : '/home'));
+
+var id = 0;
 
 socket
     .on('connect', function() {
-        log('socket connected, sending auth token');
-        socket.emit('authentication', token);
+        log('socket connected');
+        if (id == 0) {
+            setInterval(function() {
+                // send messages back to the server to ensure we can detect that they're unauthenticated
+                socket.emit('test', 'test' + ++id);
+            }, 400);
+        }
+        setTimeout(function() {
+            log('sending auth token');
+            //socket.emit('foo', 'bar');
+            socket.emit('authentication', token);
+        }, 2000);
     })
     .on('connect_error', function(err) {
         log('socket connect error: ' + err);
