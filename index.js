@@ -27,7 +27,7 @@ app.use(session({
         // milliseconds
         maxAge: 15 * 1000, // short cookie expiry to test things with
     },
-    // rolling means it's renewed every time a page load occurs, but does the session id change?
+    // rolling means it's renewed every time a page load occurs
     rolling: true,
 }));
 app.use(flash());

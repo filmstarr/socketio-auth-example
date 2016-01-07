@@ -61,7 +61,7 @@ Security.prototype.authenticateSocket = function(socket, token, callback) {
 Security.prototype.postAuthenticateSocket = function(socket, token) {
     getSessionID(token, function(err, decoded) {
         if (err) {
-            socket.disconnect();
+            return socket.disconnect();
         }
         socket.sessionID = decoded.sessionID;
     });

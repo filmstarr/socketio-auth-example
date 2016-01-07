@@ -1,7 +1,7 @@
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var users = new (require('./users'))();
-var security = security;
+var security = null;
 
 function Auth() {
 }
